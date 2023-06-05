@@ -1,3 +1,55 @@
+<?php
+session_start();
+
+	include("connection.php");
+	include("function.php");
+
+	if ($_SERVER['REQUEST_METHOD'] == "POST") {
+		
+		// SOMETHING WAS POSTED
+		// $username = $_POST['username'];
+		$password = $_POST['password'];
+		$email = $_POST['email'];
+
+		if (!empty($email) && !empty($password) ) {
+
+			// get data from database
+			
+			$query = "select * from sign_in where email = '$email' limit 1";
+			
+			$result = mysqli_query($con,$query);
+
+			if ($result) {
+
+				if ($result && mysqli_num_rows($result) > 0) {
+
+					$user_data = mysqli_fetch_assoc($result);
+					
+					if ($user_data['password'] === $password) {
+
+						$_SESSION['user_id'] = $user_data['user_id'];
+						
+						header("Location: index.php");
+						die;
+						
+					}
+					
+				}
+			
+			}
+
+			// echo "WRONG USERNAME OR PASSWORD";
+
+		}else{
+			echo "WRONG USERNAME OR PASSWORD";
+		}
+
+	}
+	
+
+?>
+
+<!-- end of php -->
 <!DOCTYPE html>
 <html>
 <head>
